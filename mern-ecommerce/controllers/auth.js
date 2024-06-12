@@ -80,3 +80,44 @@ exports.isAdmin = (req, res, next) => {
   }
   next();
 };
+
+exports.forgetPassword = (req, res) => {
+  const { email } = req.body;
+  User.findOne({ email }, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User with that email doesn't exist",
+      });
+    }
+    const token = jwt.sign(
+      { _id: user._id, name: user.name },
+      process.env.JWT_RESET_PASSWORD,
+      { expiresIn: '10m' }
+    );
+
+    // email data
+    const emailData = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Password Reset link',
+      html: `
+        <h1>Please use the following link to reset your password</h1>
+        <p>${process.env.CLIENT_URL}/reset-password/${token}</p>
+        <hr />
+        <p>This email may contain sensitive information</p>
+        <p>${process.env.CLIENT_URL}</p>
+      `,
+    };
+
+    return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+      if (err) {
+        return res.status(400).json({
+          error: 'Password reset failed. Try again',
+        });
+      } else {
+        sendEmail(emailData);
+        return res.json({
+          message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min`,
+        });
+      }
+    });
