@@ -95,7 +95,7 @@ exports.forgetPassword = (req, res) => {
       { expiresIn: '10m' }
     );
 
-    // email data
+    //email data
     const emailData = {
       from: process.env.EMAIL_FROM,
       to: email,
