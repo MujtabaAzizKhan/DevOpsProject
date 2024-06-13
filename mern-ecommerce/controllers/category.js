@@ -59,7 +59,7 @@ exports.remove = (req, res) => {
 };
 
 exports.list = (req, res) => {
-  Category.find().exec((err, data) => {
+  Categoryy.find().exec((err, data) => {
     if (err) {
       return res.status(400).json({
         error: errorHandler(err),

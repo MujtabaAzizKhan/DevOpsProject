@@ -29,7 +29,6 @@ router.delete(
   remove
 );
 router.get('/categories', list);
-
 router.param('categoryId', categoryById);
 router.param('userId', userById);
 
