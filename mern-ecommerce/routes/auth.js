@@ -16,4 +16,8 @@ router.get('/hello', requireSignin, (req, res) => {
   res.send('hello there');
 });
 
+router.get('/hello', requireSignin, (req, res) => {
+  res.send('hello there');
+});
+
 module.exports = router;
