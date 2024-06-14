@@ -13,32 +13,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
+      
       - name: Pull Docker image
-        run: |
-          docker buildx create --use
-          docker pull arshikjaved/pr-review:v1.0 || true
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
-                              --cache-to=type=local,dest=/tmp/.buildx-cache-new \
-                              -t arshikjaved/pr-review:v1.0 .
-
-      - name: Update Docker cache
-        if: success()
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
+        run: docker pull arshikjaved/pr-review:v1.0
+  
       - name: Set script name
         id: script_name
         run: |
@@ -59,7 +37,7 @@ jobs:
           LINE_NUMBER: ${{ github.event.comment.line }}
           REPOSITORY_OWNER: ${{ github.repository_owner }}
           REPOSITORY_NAME: ${{ github.event.repository.name }}
-          SCRIPT: ${{ steps.script_name.outputs.script }}
+          SCRIPT: ${{ github.event_name == 'pull_request' && 'generate_response.py' || 'reply_thread.py' }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         
@@ -68,4 +46,6 @@ jobs:
             docker run --rm -e OWNER='${{env.REPOSITORY_OWNER}}' -e REPO_NAME='${{env.REPOSITORY_NAME}}' -e COMMIT_SHA="${{ github.event.pull_request.head.sha }}" -e PR_NUMBER="${{ github.event.pull_request.number }}" -e ACTION="${{env.ACTION}}" -e EVENT_NAME="${{ env.EVENT_NAME }}" arshikjaved/pr-review:v1.0 sh -c "python /app/generate_response.py --owner '${{env.REPOSITORY_OWNER}}' --repo-name '${{env.REPOSITORY_NAME}}' --commit-sha '${{ env.COMMIT_SHA }}' --pr-number '${{ env.PR_NUMBER }}' --event-name '${{ env.EVENT_NAME }}' --action '${{ env.ACTION }}'"
           else
             docker run --rm -e OWNER='${{env.REPOSITORY_OWNER}}' -e REPO_NAME='${{env.REPOSITORY_NAME}}' -e COMMIT_SHA="${{ github.event.pull_request.head.sha }}" -e PR_NUMBER="${{ github.event.pull_request.number }}" -e EVENT_NAME="${{ env.EVENT_NAME }}" arshikjaved/pr-review:v1.0 sh -c "python /app/reply_thread.py --owner '${{env.REPOSITORY_OWNER}}' --repo-name '${{env.REPOSITORY_NAME}}' --commit-sha '${{ env.COMMIT_SHA }}' --pr-number '${{ env.PR_NUMBER }}' --event-name '${{ env.EVENT_NAME }}' --comment-body '${{ env.COMMENT_BODY }}' --comment-id '${{ env.COMMENT_ID }}' --file-path '${{ env.FILE_PATH }}' --line-number '${{ env.LINE_NUMBER }}'"
-          fi
+          fi       
+
+          
