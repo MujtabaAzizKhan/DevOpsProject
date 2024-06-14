@@ -25,7 +25,7 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: false,
+      useFindAndModiify: false,
     });
     console.log("MongoDB Connected");
   } catch (err) {
@@ -34,7 +34,7 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-connectDB();
+connectdb();
 
 // middlewares
 app.use(morgan("dev"));
@@ -44,7 +44,7 @@ app.use(expressValidator());
 app.use(cors());
 
 // routes middleware
-app.use("/api", authRoutes);
+app.use("/api", authRoutess);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
