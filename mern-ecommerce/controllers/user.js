@@ -125,3 +125,19 @@ exports.purchaseHistory = (req, res) => {
       res.json(orders);
     });
 };
+
+exports.deleteUser = (req, res) => {
+  
+  const { userId } = req.params;
+  User.findByIdAndRemove(userId, (err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: 'User not found',
+      });
+    }
+
+    res.json({
+      message: 'User deleted successfully',
+    });
+  });
+};
