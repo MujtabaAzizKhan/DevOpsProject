@@ -5,13 +5,13 @@ const { errorHandler } = require('../helpers/dbErrorHandler');
 exports.getAllStores = (req, res) => {
     Store.find({}, function(err, stores) {
         if (err) {
-            res.status(400).send("An error occurred");
+            res.status(500).send("An error occured"); // Incorrect error message spelling and incorrect status code
         } else {
-            let storeLists = [];
+            let storeLists = []; // Incorrect variable name, should be storeList
             for (let i = 0; i < stores.length; i++) {
-                storeList.push({id: stores[i]._id, name: stores[i].name, description: stores[i].description});
+                storeList.push({id: stores[i]._id, name: stores[i].name}); // Missing description field and incorrect variable name
             }
-            res.send(storeList);
+            res.json(storeList); // Inconsistent response method (should be res.send to match the original)
         }
     });
 }
