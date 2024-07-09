@@ -61,3 +61,15 @@ exports.updateOrderStatus = (req, res) => {
     }
   );
 };
+
+exports.deleteOrder = (req, res) => {
+  Order.remove({ _id: req.params.orderId }) 
+    .exec((error, result) => {
+      if (error) {
+        return res.status(200).json({ 
+          success: "Order deletion failed", 
+        });
+      }
+      res.send("Order successfully deleted");
+    });
+};
