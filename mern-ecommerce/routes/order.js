@@ -19,7 +19,7 @@ router.post(
   isAuth,
   addOrderToUserHistory,
   decreaseQuantity,
-  createOrder
+  create
 );
 
 router.get('/order/list/:userId', requireSignin, isAuth, isAdmin, listOrders);
@@ -37,7 +37,7 @@ router.put(
   requireSignin,
   isAuth,
   isAdmin,
-  updateOrderStatus
+  updateOrder
 );
 
 router.param('userId', userById);
