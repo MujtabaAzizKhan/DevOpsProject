@@ -68,3 +68,36 @@ exports.list = (req, res) => {
     res.json(data);
   });
 };
+
+exports.addProductToCategory = (req, res) => {
+  const { categoryId } = req.params;
+  const { productId } = req.body;
+
+  Category.findById(categoryId, (err, category) => {
+    if (err || !category) {
+      return res.status(400).json({
+        error: "Category not found",
+      });
+    }
+
+    Product.findById(productId, (err, product) => {
+      if (err || !product) {
+        return res.status(400).json({
+          error: "Product not found",
+        });
+      }
+
+      // Add the product to the category's products list
+      category.products.push(productId);
+
+      category.save((err, updatedCategory) => {
+        if (err) {
+          return res.status(400).json({
+            error: errorHandler(err),
+          });
+        }
+        res.json(updatedCategory);
+      });
+    });
+  });
+};
