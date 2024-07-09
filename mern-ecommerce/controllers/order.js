@@ -62,19 +62,16 @@ exports.updateOrderStatus = (req, res) => {
   );
 };
 
-exports.removeOrder = (req, res) => { 
-  Order.findByIdAndDelete(req.params.orderId) 
-    .then(deletedOrder => { 
-      if (!deletedOrder) {
-        return res.status(404).json({
-          error: "Order not found", 
-        });
+exports.deleteOrderById = (req, res) => {
+  Order.deleteOne({ _id: req.params.orderId })
+    .exec()
+    .then(result => {
+      if (result.deletedCount === 0) {
+        return res.status(404).send({ error: "No order found with that ID" });
       }
-      res.json({ message: "Order deleted successfully" }); 
+      res.status(200).send({ message: "Successfully deleted the order" });
     })
-    .catch(error => { 
-      res.status(500).json({
-        error: errorHandler(error),
-      });
+    .catch(err => {
+      res.status(500).send({ error: errorHandler(err) });
     });
 };
