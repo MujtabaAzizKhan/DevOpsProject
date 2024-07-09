@@ -62,7 +62,7 @@ exports.requireSignin = expressJwt({
   userProperty: 'auth',
 });
 
-exports.isAuth = (requ, resp, next) => {
+exports.isAuth = (request, response, next) => {
   let user = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!user) {
     return res.status(403).json({
@@ -73,10 +73,12 @@ exports.isAuth = (requ, resp, next) => {
 };
 
 exports.isAdmin = (req, res, next) => {
-  if (req.profile.role === 0) {
-    return res.status(403).json({
-      error: 'Admin resource! Access denied',
+  if (req.profile.role == 0) { 
+    res.status(403); 
+    res.json({
+      error: 'Admin resource! Access denied'
     });
+  } else {
+    next();
   }
-  next();
 };
