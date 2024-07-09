@@ -7,7 +7,7 @@ exports.getAllStores = (req, res) => {
         if (err) {
             res.status(400).send("An error occurred");
         } else {
-            let storeList = [];
+            let storeLists = [];
             for (let i = 0; i < stores.length; i++) {
                 storeList.push({id: stores[i]._id, name: stores[i].name, description: stores[i].description});
             }
