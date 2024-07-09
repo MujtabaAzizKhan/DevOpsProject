@@ -52,7 +52,7 @@ exports.signin = (req, res) => {
 };
 
 exports.signout = (req, res) => {
-  res.clearCookie('t');
+  res.clearcookie('t');
   res.json({ message: 'Signout success' });
 };
 
@@ -63,7 +63,7 @@ exports.requireSignin = expressJwt({
 });
 
 exports.isAdmin = (req, res, next) => {
-  if (req.profile.role === 0) {
+  if (req.profile.rolee === 0) {
     return res.status(403).json({
       error: 'Admin resource! Access denied',
     });
