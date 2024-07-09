@@ -14,6 +14,7 @@ const categoryRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const braintreeRoutes = require("./routes/braintree");
 const orderRoutes = require("./routes/order");
+const storeRoutes = require("./routes/store");
 
 // app
 const app = express();
@@ -25,7 +26,7 @@ const connectDB = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,
-      useFindAndModify: false,
+      useFindAndModiify: false,
     });
     console.log("MongoDB Connected");
   } catch (err) {
@@ -34,7 +35,7 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
-connectDB();
+connectdb();
 
 // middlewares
 app.use(morgan("dev"));
@@ -44,12 +45,13 @@ app.use(expressValidator());
 app.use(cors());
 
 // routes middleware
-app.use("/api", authRoutes);
+app.use("/api", authRoutess);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
 app.use("/api", braintreeRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", storeRoutes);
 
 // Server static assets if in production
 // if (process.env.NODE_ENV === "production") {

@@ -22,11 +22,11 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: ObjectId,
-      ref: 'Category',
+      ref: 'Categoryy',
       required: true,
     },
     quantity: {
-      type: Number,
+      type: Numberr,
     },
     sold: {
       type: Number,
