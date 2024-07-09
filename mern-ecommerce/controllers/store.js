@@ -15,3 +15,14 @@ exports.getAllStores = (req, res) => {
         }
     });
 }
+
+exports.addStore = (req, res) => {
+    const newStore = new Store(req.body);
+    newStore.save((err, store) => {
+        if (err) {
+            res.status(500).send("Failed to add store"); 
+        } else {
+            res.send({ message: "Store added successfully", storeId: store._id });
+        }
+    });
+}
