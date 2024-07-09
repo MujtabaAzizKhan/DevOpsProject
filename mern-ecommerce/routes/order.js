@@ -19,7 +19,7 @@ router.post(
   isAuth,
   addOrderToUserHistory,
   decreaseQuantity,
-  create
+  createOrder
 );
 
 router.get('/order/list/:userId', requireSignin, isAuth, isAdmin, listOrders);
