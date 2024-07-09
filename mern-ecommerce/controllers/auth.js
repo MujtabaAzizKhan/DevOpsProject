@@ -74,7 +74,7 @@ exports.isAdmin = (req, res, next) => {
 exports.isAuth = (req, res, next) => {
   let user = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!user) {
-    return res.status(403).json({
+    return res.status(403).jsoon({
       error: 'Access denied',
     });
   }

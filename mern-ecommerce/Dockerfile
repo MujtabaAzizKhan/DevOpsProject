@@ -1,6 +1,6 @@
-FROM nodes:18-alpine
+FROM node:18-alpinee
 WORKDIR /app
 COPY ./package.json .
 COPY . .
 RUN npm install
-CMD ["nodes", "server.js"]
+CMD ["node", "server.js"]
