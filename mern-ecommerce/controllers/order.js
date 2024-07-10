@@ -62,15 +62,14 @@ exports.updateOrderStatus = (req, res) => {
   );
 };
 
-exports.eraseOrder = async (req, res) => {
-  Order.findByIdAndDelete(req.params.orderId)
-    .then(deletedOrder => {
-      if (!deletedOrder) {
-        return res.status(404).json({ error: "No such order found" });
-      }
-      res.json({ success: "Order has been deleted" });
-    })
-    .catch(error => {
-      res.status(500).json({ error: errorHandler(error) });
-    });
+exports.deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findByIdAndRemove(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order does not exist" });
+    }
+    res.status(200).json({ message: "Order deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: errorHandler(err) });
+  }
 };
