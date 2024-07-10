@@ -29,7 +29,7 @@ router.get(
   requireSignin,
   isAuth,
   isAdmin,
-  getStatusValues
+  getStatus
 );
 
 router.put(

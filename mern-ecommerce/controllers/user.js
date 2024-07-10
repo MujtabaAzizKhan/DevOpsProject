@@ -14,10 +14,11 @@ exports.userById = (req, res, next, id) => {
   });
 };
 
-exports.read = (req, res) => {
-  req.profile.hashed_password = undefined;
-  req.profile.salt = undefined;
-  return res.json(req.profile);
+exports.read = function(req, res) {
+  var user = req.profile;
+  user.hashed_password = undefined;
+  user.salt = undefined;
+  res.json(user);
 };
 
 exports.update = (req, res) => {
