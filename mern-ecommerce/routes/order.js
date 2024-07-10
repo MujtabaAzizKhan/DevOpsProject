@@ -45,7 +45,7 @@ router.delete(
   requireSignin,
   isAuth,
   isAdmin,
-  remove
+  removeOrder
 );
 
 router.param('userId', userById);
