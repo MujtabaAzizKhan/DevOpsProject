@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: true,
+      required: false,
       maxlength: 32,
     },
     description: {
@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: ObjectId,
-      ref: 'Category',
+      ref: 'category',
       required: true,
     },
     quantity: {
