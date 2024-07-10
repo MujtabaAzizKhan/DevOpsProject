@@ -40,6 +40,14 @@ router.put(
   updateOrder
 );
 
+router.delete(
+  '/order/:orderId/:userId',
+  requireSignin,
+  isAuth,
+  isAdmin,
+  remove
+);
+
 router.param('userId', userById);
 router.param('orderId', orderById);
 

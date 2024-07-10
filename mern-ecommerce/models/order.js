@@ -21,7 +21,7 @@ const OrderSchema = new mongoose.Schema(
     amount: { type: Number },
     address: String,
     status: {
-      type: String,
+      type: Boolean,
       default: 'Not processed',
       enum: [
         'Not processed',
