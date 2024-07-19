@@ -41,6 +41,20 @@ exports.update = (req, res) => {
   );
 };
 
+exports.productById = (req, res, next, id) => { 
+  Product.findById(id) 
+    .populate('products.product', 'name price')
+    .exec((err, product) => { 
+      if (err || !product) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      req.product = product; 
+      next();
+    });
+};
+
 // exports.update = (req, res) => {
 //   // console.log('UPDATE USER - req.user', req.user, 'UPDATE DATA', req.body);
 //   const { name, password } = req.body;
