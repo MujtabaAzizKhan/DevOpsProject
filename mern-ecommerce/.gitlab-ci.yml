@@ -1,0 +1,91 @@
+# stages:
+#   - review
+
+# variables:
+#   GIT_STRATEGY: clone
+
+# review:
+
+#   stage: review
+#   image: python:3.11
+#   script:
+#     - pip install requests langchain langchain-groq
+#     - |
+#       if [[ "$CI_PIPELINE_SOURCE" == "merge_request_event" || "$CI_PIPELINE_SOURCE" == "push" ]]; then
+#         pwd
+
+#         ls -la
+
+#         cd /builds/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/mr_reviewer
+#         python generate_response.py \
+#           --owner "${CI_PROJECT_NAMESPACE}" \
+#           --repo-name "${CI_PROJECT_NAME}" \
+#           --commit-sha "${CI_COMMIT_SHA}" \
+#           --mr-number "${CI_MERGE_REQUEST_IID}" \
+#           --event-name "${CI_PIPELINE_SOURCE}" \
+#           --action "${CI_JOB_NAME}" \
+#           --private-token "${GITLAB_PRIVATE_TOKEN}"
+#       fi
+#   only:
+#     - merge_requests
+#     - changes
+
+
+stages:
+  - review
+
+variables:
+  GIT_STRATEGY: clone
+
+before_script:
+  - apk add --no-cache curl jq
+
+review:
+  stage: review
+  image: docker:stable
+
+  services:
+    - docker:dind
+
+  script:
+    - |
+      if [[ "$CI_PIPELINE_SOURCE" == "merge_request_event" || "$CI_PIPELINE_SOURCE" == "push" ]]; then
+
+        MR_DETAILS=$(curl --header "PRIVATE-TOKEN: glpat-ZekGy3vsLDzfsWTdFzKE" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}")
+        
+        echo "MR_DETAILS: $MR_DETAILS"
+        
+        MR_LABELS=$(echo $MR_DETAILS | jq -r '.labels | .[]')
+        
+        echo "Labels: $MR_LABELS"
+        
+         if echo "$MR_LABELS" | grep -qw "review"; then
+          echo "Review label found, running review job..."
+
+          docker pull arshikjaved/mr-review:latest
+
+          docker run --rm \
+            -e OWNER="${CI_PROJECT_NAMESPACE}" \
+            -e REPO_NAME="${CI_PROJECT_NAME}" \
+            -e COMMIT_SHA="${CI_COMMIT_SHA}" \
+            -e MR_NUMBER="${CI_MERGE_REQUEST_IID}" \
+            -e EVENT_NAME="${CI_PIPELINE_SOURCE}" \
+            -e ACTION="${CI_JOB_NAME}" \
+            -e PRIVATE_TOKEN="${GITLAB_PRIVATE_TOKEN}" \
+            arshikjaved/mr-review:latest sh -c "python /app/generate_response.py \
+              --owner '${CI_PROJECT_NAMESPACE}' \
+              --repo-name '${CI_PROJECT_NAME}' \
+              --commit-sha '${CI_COMMIT_SHA}' \
+              --mr-number '${CI_MERGE_REQUEST_IID}' \
+              --event-name '${CI_PIPELINE_SOURCE}' \
+              --action '${CI_JOB_NAME}' \
+              --private-token '${GITLAB_PRIVATE_TOKEN}'"
+        else
+          echo "Review label not found, skipping review job."
+        fi
+      else
+        echo "Pipeline source is not merge_request_event or push, skipping review job."
+      fi
+  only:
+    - merge_requests
+    - changes
