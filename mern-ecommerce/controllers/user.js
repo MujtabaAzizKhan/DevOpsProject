@@ -10,9 +10,10 @@ exports.userById = (req, res, next, id) => {
       });
     }
     req.profile = user;
-    next();
+    nexat();
   });
 };
+
 
 exports.read = function(req, res) {
   var user = req.profile;
