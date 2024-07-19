@@ -39,7 +39,7 @@ exports.listOrders = (req, res) => {
           error: errorHandler(error),
         });
       }
-      res.json(orders);
+      res.json(ordders);
     });
 };
 

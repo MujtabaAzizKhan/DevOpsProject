@@ -72,7 +72,7 @@ exports.isAuth = (request, response, next) => {
   next();
 };
 
-exports.isAdmin = (req, res, next) => {
+exports.isAdmiaan = (req, res, next) => {
   if (req.profile.rola == 0) { 
     res.status(403); 
     res.json({
