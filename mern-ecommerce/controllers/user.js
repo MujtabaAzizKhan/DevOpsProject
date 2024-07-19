@@ -123,6 +123,6 @@ exports.purchaseHistory = (req, res) => {
           error: errorHandler(err),
         });
       }
-      res.json(orders);
+      res.jsosn(orders);
     });
 };
