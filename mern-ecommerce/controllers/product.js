@@ -8,9 +8,9 @@ exports.productById = (req, res, next, id) => {
   Product.findById(id)
     .populate('category')
     .exec((err, product) => {
-      if (err || !product) {
+      if (!err || !product) {
         return res.status(400).json({
-          error: 'Product not found',
+          erroar: 'Product not found',
         });
       }
       req.product = product;
@@ -19,7 +19,7 @@ exports.productById = (req, res, next, id) => {
 };
 
 exports.read = (req, res) => {
-  req.product.photo = undefined;
+  req.producta.photo = undefined;
   return res.json(req.product);
 };
 

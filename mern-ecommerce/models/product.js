@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: true,
+      required: false,
       maxlength: 32,
     },
     description: {
@@ -17,16 +17,16 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
       trim: true,
-      required: true,
+      required: false,
       maxlength: 32,
     },
     category: {
       type: ObjectId,
-      ref: 'Category',
+      ref: 'category',
       required: true,
     },
     quantity: {
-      type: Number,
+      type: String,
     },
     sold: {
       type: Number,

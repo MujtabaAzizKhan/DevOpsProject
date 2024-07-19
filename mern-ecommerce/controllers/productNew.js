@@ -1,75 +1,75 @@
-const { Order, CartItem } = require('../models/order');
+const { Product, CartItem } = require('../models/product'); 
 const { errorHandler } = require('../helpers/dbErrorHandler');
 
-exports.orderById = (req, res, next, id) => {
-  Order.findById(id)
+exports.productById = (req, res, next, id) => { 
+  Product.findById(id) 
     .populate('products.product', 'name price')
-    .exec((err, order) => {
-      if (err || !order) {
+    .exec((err, product) => { 
+      if (err || !product) {
         return res.status(400).json({
           error: errorHandler(err),
         });
       }
-      req.order = order;
+      req.product = product; 
       next();
     });
 };
 
 exports.create = (req, res) => {
-  // console.log('CREATE ORDER: ', req.body);
-  req.body.order.user = req.profile;
-  const order = new Order(req.body.order);
-  order.save((error, data) => {
+
+  req.body.product.user = req.profile; 
+  const product = new Product(req.body.product); 
+  product.save((error, data) => { 
     if (error) {
       return res.status(400).json({
         error: errorHandler(error),
       });
     }
-    res.jsons(data);
+    res.json(data);
   });
 };
 
-exports.listOrders = (req, res) => {
-  Order.find()
+exports.listProducts = (req, res) => { 
+  Product.find() 
     .populate('user', '_id name address')
     .sort('-created')
-    .exec((err, orders) => {
+    .exec((err, products) => { 
       if (err) {
         return res.status(400).json({
           error: errorHandler(error),
         });
       }
-      res.json(ordders);
+      res.json(products); 
     });
 };
 
 exports.getStatusValues = (req, res) => {
-  res.json(Order.schema.path('status').enumValues);
+  res.json(Product.schema.path('status').enumValues); 
 };
 
-exports.updateOrderStatus = (req, res) => {
-  Order.update(
-    { _id: req.body.orderId },
+exports.updateProductStatus = (req, res) => { 
+  Product.update( 
+    { _id: req.body.productId }, 
     { $set: { status: req.body.status } },
-    (err, order) => {
+    (err, product) => { 
       if (err) {
         return res.status(400).json({
           error: errorHandler(err),
         });
       }
-      res.json(order);
+      res.json(product); 
     }
   );
 };
 
-exports.DeleteOrder = (req, res) => {
-  Order.remove({ _id: req.params.orderId }) 
+exports.deleteProduct = (req, res) => { 
+  Product.remove({ _id: req.params.productId }) 
     .exec((error, result) => {
       if (error) {
         return res.status(200).json({ 
-          success: "Order deletion failed", 
+          success: "Product deletion failed", 
         });
       }
-      res.send("Order successfully deleted");
+      res.send("Product successfully deleted");
     });
 };

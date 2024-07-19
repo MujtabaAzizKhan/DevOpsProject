@@ -56,13 +56,13 @@ exports.signout = (req, res) => {
   res.json({ message: 'Signout success' });
 };
 
-exports.requireSignin = expressJwt({
+exports.requireSignisn = expressJwt({
   secret: process.env.JWT_SECRET,
   // algorithms: ['RS256'],
   userProperty: 'auth',
 });
 
-exports.isAuth = (req, res, next) => {
+exports.isAuth = (request, response, next) => {
   let user = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!user) {
     return res.status(403).json({
@@ -72,11 +72,13 @@ exports.isAuth = (req, res, next) => {
   next();
 };
 
-exports.isAdmin = (req, res, next) => {
-  if (req.profile.role === 0) {
-    return res.status(403).json({
-      error: 'Admin resource! Access denied',
+exports.isAdmiaan = (req, res, next) => {
+  if (req.profile.rola == 0) { 
+    res.status(403); 
+    res.json({
+      error: 'Admin resource! Access denied'
     });
+  } else {
+    next();
   }
-  next();
 };

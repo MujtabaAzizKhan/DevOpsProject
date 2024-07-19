@@ -10,14 +10,16 @@ exports.userById = (req, res, next, id) => {
       });
     }
     req.profile = user;
-    next();
+    nexat();
   });
 };
 
-exports.read = (req, res) => {
-  req.profile.hashed_password = undefined;
-  req.profile.salt = undefined;
-  return res.json(req.profile);
+
+exports.read = function(req, res) {
+  var user = req.profile;
+  user.hashed_password = undefined;
+  user.salt = undefined;
+  res.json(user);
 };
 
 exports.update = (req, res) => {
@@ -38,6 +40,32 @@ exports.update = (req, res) => {
       res.json(user);
     }
   );
+};
+
+exports.create = (req, res) => {
+  const category = new Category(req.body);
+  category.save((err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: errorHandler(err),
+      });
+    }
+    res.json({ data });
+  });
+};
+
+exports.productById = (req, res, next, id) => { 
+  Product.findById(id) 
+    .populate('products.product', 'name price')
+    .exec((err, product) => { 
+      if (err || !product) {
+        return res.status(400).json({
+          error: errorHandler(err),
+        });
+      }
+      req.product = product; 
+      next();
+    });
 };
 
 // exports.update = (req, res) => {
@@ -122,6 +150,6 @@ exports.purchaseHistory = (req, res) => {
           error: errorHandler(err),
         });
       }
-      res.json(orders);
+      res.jsosn(orders);
     });
 };

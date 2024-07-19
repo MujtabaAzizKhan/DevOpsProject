@@ -29,7 +29,7 @@ router.get(
   requireSignin,
   isAuth,
   isAdmin,
-  getStatusValues
+  getStatus
 );
 
 router.put(
@@ -37,7 +37,15 @@ router.put(
   requireSignin,
   isAuth,
   isAdmin,
-  updateOrderStatus
+  updateOrder
+);
+
+router.delete(
+  '/order/:orderId/:userId',
+  requireSignin,
+  isAuth,
+  isAdmin,
+  removeOrder
 );
 
 router.param('userId', userById);
